@@ -6,26 +6,8 @@ var spawn = require('child_process').spawn;
 var console = require('console');
 var fs = require('fs');
 var path = require('path');
-var os = require('os');
-
-var FILE_CACHE_SIZE         =   256 * 1024;
-
-var s_buff = null;//new Buffer(FILE_CACHE_SIZE);
-
-//var PLATFORM_UNKNOWN        = 0;
-//var PLATFORM_WIN32          = 1;
-//var PLATFORM_LINUX          = 2;
-//
-//var curPlatform = PLATFORM_UNKNOWN;
-//
-//function checkPlatform() {
-//    var platform = os.platform();
-//    console.log('cur platform ' + platform);
-//
-//    if ('win32' == platform) {
-//        curPlatform = PLATFORM_WIN32;
-//    }
-//}
+var strutils = require('./stringutils');
+var fileutils = require('./fileutils');
 
 function runSpawn(cmd, param, dir, endfunc) {
     scmd = spawn(cmd, param, { cwd: dir });
@@ -48,54 +30,6 @@ function runSpawn(cmd, param, dir, endfunc) {
     });
 }
 
-function copyfile(src, dest, callback) {
-    var stat = fs.lstatSync(src);
-    var size = stat.size;
-
-    var srcfp = fs.openSync(src, 'r');
-    var destfp = fs.openSync(dest, 'w');
-
-    if (s_buff == null)
-        s_buff = new Buffer(FILE_CACHE_SIZE);
-
-    for (var i = 0; i < size; ) {
-        var lastsize = size - i;
-        if (lastsize <= FILE_CACHE_SIZE) {
-            var sz = fs.readSync(srcfp, s_buff, 0, lastsize, null);
-            fs.writeSync(destfp, s_buff, 0, sz, null);
-
-            break;
-        }
-        else {
-            var sz = fs.readSync(srcfp, s_buff, 0, FILE_CACHE_SIZE, null);
-            fs.writeSync(destfp, s_buff, 0, sz, null);
-
-            i += FILE_CACHE_SIZE;
-        }
-    }
-
-    fs.close(srcfp);
-    fs.close(destfp);
-
-    callback();
-
-    //var isappend = false;
-    //fs.readFile(src, function (err, data) {
-    //    if (err) {
-    //        callback();
-    //
-    //        return ;
-    //    }
-    //
-    //    if (isappend) {
-    //        fs.appendFileSync(dest, data);
-    //    }
-    //    else {
-    //        fs.writeFileSync(dest, data);
-    //    }
-    //});
-}
-
 function cmd_heycp(param, dir, callback) {
     var max = param.length;
     if (max != 2) {
@@ -107,18 +41,47 @@ function cmd_heycp(param, dir, callback) {
     }
 
     var srcpath = path.join(dir, param[0]);
-    var stat = fs.lstatSync(srcpath);
-    if (stat.isDirectory()) {
+    var destpath = path.join(dir, param[1]);
+    if (strutils.hasWildcard(srcpath)) {
+        fileutils.readdirWildcard(srcpath, function (err, files) {
+            if (err) {
+                callback();
 
+                return ;
+            }
+
+            var maxi = files.length;
+            for (var i = 0; i < maxi; ++i) {
+                if (!fileutils.isDirectory(files[i])) {
+                    var destpath = path.join(dir, param[1]);
+                    fileutils.copyfile(files[i], destpath, callback);
+                }
+            }
+        });
     }
     else {
-        var destpath = path.join(dir, param[1]);
-        copyfile(srcpath, destpath, callback);
-        //if (PLATFORM_WIN32 == curPlatform) {
-        //    param[max] = '/Y';
-        //
-        //    runSpawn('copy', param, dir, callback);
-        //}
+        var srcstat = fs.lstatSync(srcpath);
+        if (srcstat.isDirectory()) {
+            fileutils.readdirWildcard(srcpath, function (err, files) {
+                if (err) {
+                    callback();
+
+                    return ;
+                }
+
+                var maxi = files.length;
+                for (var i = 0; i < maxi; ++i) {
+                    if (!fileutils.isDirectory(files[i])) {
+                        var destpath = path.join(dir, param[1]);
+                        fileutils.copyfile(srcpath, destpath, callback);
+                    }
+                }
+            });
+        }
+        else {
+            var destpath = path.join(dir, param[1]);
+            fileutils.copyfile(srcpath, destpath, callback);
+        }
     }
 }
 
@@ -167,7 +130,7 @@ function addCmd(lst, cmd, param, dir) {
 }
 
 function addCmdEx(lst, cmd, dir) {
-    var arr = cmd.split(' ');
+    var arr = strutils.splitCmd(cmd);
     var param = [];
     var first = arr[0];
 
