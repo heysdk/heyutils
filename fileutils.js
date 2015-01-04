@@ -139,9 +139,22 @@ function readdirWildcard(destpath, callback) {
     }
 }
 
+function writeFile(filename, data, callback) {
+    var arr = strutils.splitPath(filename);
+    var max = arr.length;
+    if (max > 1) {
+        var destdir = strutils.makePath(arr, 0, max - 1);
+        createDirectory(destdir);
+    }
+
+    fs.writeFile(filename, data, callback);
+}
+
 exports.isDirectory = isDirectory;
 exports.createDirectory = createDirectory;
 
 exports.copyfile = copyfile;
 
 exports.readdirWildcard = readdirWildcard;
+
+exports.writeFile = writeFile;

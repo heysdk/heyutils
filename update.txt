@@ -1,3 +1,7 @@
+0.1.4	zhs007 @ 2015.01.04
+
+1¡¢fileutils module£¬add writeFile, it automatically create no-exist directory
+
 0.1.3	zhs007 @ 2015.01.03
 
 1¡¢add stringutils, support directory, file, wildcard's string operator
