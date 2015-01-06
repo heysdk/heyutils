@@ -159,6 +159,169 @@ function makePathEx(basepath, arr, begin, nums) {
     return curpath;
 }
 
+function readLine(str) {
+    var output = '';
+    var max = str.length;
+    var isline = false;
+    var i = 0;
+    for (; i < max; ++i) {
+        var cc = str.charAt(i);
+        if (cc != '\r' || cc != '\n') {
+            if (isline) {
+                break;
+            }
+
+            output += cc;
+        }
+        else {
+            isline = true;
+        }
+    }
+
+    if (isline) {
+        return {line: output, off: i};
+    }
+
+    return null;
+}
+
+function trim(str) {
+    return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+
+function ltrim(str) {
+    return str.replace(/(^\s*)/g, "");
+}
+
+function rtrim(str) {
+    return str.replace(/(\s*$)/g, "");
+}
+
+//function isInArray(arr, str) {
+//    var max = arr.length;
+//    for (var i = 0; i < max; ++i) {
+//        if (str == arr[i]) {
+//            return true;
+//        }
+//    }
+//
+//    return false;
+//}
+
+function trimex(str, pattern) {
+    var maxlength = str.length;
+    var begin = 0;
+    var end = maxlength;
+
+    for(; begin < maxlength; ++begin) {
+        if (!pattern.indexOf(str.charAt(begin))) {
+            break;
+        }
+    }
+
+    for(; end > 0; --end) {
+        if (!pattern.indexOf(str.charAt(begin))) {
+            break;
+        }
+    }
+
+    if (begin > end) {
+        return '';
+    }
+
+    return str.slice(begin, end);
+}
+
+function getPattern_trimex() {
+    return ' \r\n\t';
+}
+
+function canUsedWord(c) {
+    var str = 'abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
+    return str.indexOf(c) >= 0;
+}
+
+function isWord(str) {
+    var word = trimex(str, getPattern_trimex());
+    var max = word.length;
+    for (var i = 0; i < max; ++i) {
+        if (!canUsedWord(word.charAt(i))) {
+            return false;
+        }
+    }
+
+    return word.length > 0;
+}
+
+// str is like abc[i][j], return ['abc', 'i', 'j']
+function parseArray(str) {
+    var arr = [];
+    str = trimex(str, getPattern_trimex());
+    var index = 0;
+    var cw = '';
+    var begin = str.indexOf('[', index);
+    while (begin >= 0) {
+        cw = trimex(str.slice(index, begin));
+        if (!isWord(cw)) {
+            return null;
+        }
+
+        index = begin;
+        arr.push(cw);
+
+        begin = str.indexOf(']', index);
+        if (begin < 0) {
+            return null;
+        }
+
+        cw = trimex(str.slice(index, begin));
+        if (!isWord(cw)) {
+            return null;
+        }
+
+        index = begin;
+        arr.push(cw);
+
+        begin = str.indexOf('[', index);
+    }
+
+    return arr;
+}
+
+function isInt(str) {
+    var strnum = '1234567890';
+    var max = str.length;
+    for (var i = 0; i < max; ++i) {
+        if (!strnum.indexOf(str.charAt(i))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// str is like [0, 100], return [0, 100]
+function parseRange(str) {
+    str = trimex(str, getPattern_trimex());
+    var cw = '';
+    var begin = str.indexOf('[', 0);
+    if (begin >= 0) {
+        var mid = str.indexOf(',', begin + 1);
+        if (mid >= 0) {
+            var end = str.indexOf(']', mid + 1);
+
+            var cw0 = trimex(str.slice(begin + 1, mid));
+            var cw1 = trimex(str.slice(mid + 1, end));
+
+            if (isInt(cw0) && isInt(cw1)) {
+                return [cw0, cw1];
+            }
+        }
+    }
+
+    return null;
+}
+
 exports.hasWildcard = hasWildcard;
 exports.equWildcard = equWildcard;
 
@@ -170,3 +333,15 @@ exports.splitPath = splitPath;
 exports.getFilename = getFilename;
 exports.makePath = makePath;
 exports.makePathEx = makePathEx;
+
+exports.readLine = readLine;
+exports.trim = trim;
+exports.ltrim = ltrim;
+exports.rtrim = rtrim;
+exports.trimex = trimex;
+exports.getPattern_trimex = getPattern_trimex;
+exports.canUsedWord = canUsedWord;
+exports.isWord = isWord;
+exports.parseArray = parseArray;
+exports.isInt = isInt;
+exports.parseRange = parseRange;
