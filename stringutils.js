@@ -260,8 +260,12 @@ function parseArray(str) {
     var index = 0;
     var cw = '';
     var begin = str.indexOf('[', index);
-    while (begin >= 0) {
-        cw = trimex(str.slice(index, begin));
+    if (begin < 0) {
+        return null;
+    }
+
+    do {
+        cw = trimex(str.slice(index, begin), getPattern_trimex());
         if (!isWord(cw)) {
             return null;
         }
@@ -274,7 +278,7 @@ function parseArray(str) {
             return null;
         }
 
-        cw = trimex(str.slice(index, begin));
+        cw = trimex(str.slice(index, begin), getPattern_trimex());
         if (!isWord(cw)) {
             return null;
         }
@@ -283,6 +287,11 @@ function parseArray(str) {
         arr.push(cw);
 
         begin = str.indexOf('[', index);
+    } while (begin >= 0);
+
+    cw = trimex(str.slice(index, str.length), getPattern_trimex());
+    if (isWord(cw)) {
+        return null;
     }
 
     return arr;
