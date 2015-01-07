@@ -296,16 +296,27 @@ function getPattern_trimex() {
     return ' \r\n\t';
 }
 
-function canUsedWord(c) {
-    var str = 'abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
-    return str.indexOf(c) >= 0;
+function getPattern_word() {
+    return 'abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ_';
 }
 
-function isWord(str) {
+function canUsedWord(c, pattern) {
+    if (pattern == undefined) {
+        pattern = getPattern_word();
+    }
+
+    return pattern.indexOf(c) >= 0;
+}
+
+function isWord(str, pattern) {
+    if (pattern == undefined) {
+        pattern = getPattern_word();
+    }
+
     var word = trimex(str);
     var max = word.length;
     for (var i = 0; i < max; ++i) {
-        if (!canUsedWord(word.charAt(i))) {
+        if (!canUsedWord(word.charAt(i), pattern)) {
             return false;
         }
     }
@@ -313,7 +324,7 @@ function isWord(str) {
     return word.length > 0;
 }
 
-// str is like abc[i][j], return ['abc', 'i', 'j']
+// str is like 'abc[i][j]', return ['abc', 'i', 'j']
 function parseArray(str) {
     var arr = [];
     str = trimex(str);
@@ -366,7 +377,7 @@ function isInt(str) {
     return true;
 }
 
-// str is like [0, 100], return [0, 100]
+// str is like '[0, 100]', return [0, 100]
 function parseRange(str) {
     str = trimex(str);
     var cw = '';
@@ -379,10 +390,50 @@ function parseRange(str) {
             var cw0 = trimex(str.slice(begin + 1, mid));
             var cw1 = trimex(str.slice(mid + 1, end));
 
-            return [cw0, cw1];
-            //if (isInt(cw0) && isInt(cw1)) {
-            //    return [cw0, cw1];
-            //}
+            //return [cw0, cw1];
+            if (isInt(cw0) && isInt(cw1)) {
+                return [cw0, cw1];
+            }
+        }
+    }
+
+    return null;
+}
+
+function findWord(str, dest, index, pattern) {
+    if (pattern == undefined) {
+        pattern = getPattern_word();
+    }
+
+    var begin = -1;
+    while ((begin = str.indexOf(dest, index)) >= 0) {
+        if (begin == 0 || !canUsedWord(str.charAt(begin - 1))) {
+            var end = begin + dest.length;
+            if (end == str.length || !canUsedWord(str.charAt(end))) {
+                return begin;
+            }
+        }
+    }
+
+    return -1;
+}
+
+// str is like 'a in b', return [a, b]
+function parse_AInB(str, strin, wordpattern) {
+    if (strin == undefined) {
+        strin = 'in';
+    }
+    if (wordpattern == undefined) {
+        wordpattern = getPattern_word();
+    }
+
+    var inbegin = findWord(str, strin, 0);
+    if (inbegin > 0) {
+        var a = trimex(str.slice(0, inbegin));
+        var b = trimex(str.slice(inbegin + strin.length, str.length));
+
+        if (isWord(a, wordpattern) && isWord(b, wordpattern)) {
+            return [a, b];
         }
     }
 
@@ -390,11 +441,11 @@ function parseRange(str) {
 }
 
 // position the new line
-function posNewLine(str, beginindex) {
+function posNewLine(str, beginindex, pattern) {
     var max = str.length;
     for (var i = beginindex; i < max; ++i) {
         var cc = str.charAt(i);
-        if (canUsedWord(cc)) {
+        if (canUsedWord(cc, pattern)) {
             return beginindex;
         }
         else if (cc == '\n') {
@@ -425,9 +476,12 @@ exports.trimex = trimex;
 exports.ltrimex = ltrimex;
 exports.rtrimex = rtrimex;
 exports.getPattern_trimex = getPattern_trimex;
+exports.getPattern_word = getPattern_word;
 exports.canUsedWord = canUsedWord;
 exports.isWord = isWord;
 exports.parseArray = parseArray;
 exports.isInt = isInt;
 exports.parseRange = parseRange;
+exports.parse_AInB = parse_AInB;
 exports.posNewLine = posNewLine;
+exports.findWord = findWord;
