@@ -166,7 +166,7 @@ function readLine(str) {
     var i = 0;
     for (; i < max; ++i) {
         var cc = str.charAt(i);
-        if (cc != '\r' || cc != '\n') {
+        if (cc != '\r' && cc != '\n') {
             if (isline) {
                 break;
             }
@@ -236,6 +236,62 @@ function trimex(str, pattern) {
     return str.slice(begin, end);
 }
 
+function ltrimex(str, pattern) {
+    if (pattern == undefined) {
+        pattern = getPattern_trimex();
+    }
+
+    var maxlength = str.length;
+    var begin = 0;
+    var end = maxlength;
+
+    for(; begin < maxlength; ++begin) {
+        if (pattern.indexOf(str.charAt(begin)) < 0) {
+            break;
+        }
+    }
+
+    //for(; end > 0; --end) {
+    //    if (pattern.indexOf(str.charAt(end - 1)) < 0) {
+    //        break;
+    //    }
+    //}
+
+    if (begin > end) {
+        return '';
+    }
+
+    return str.slice(begin, end);
+}
+
+function rtrimex(str, pattern) {
+    if (pattern == undefined) {
+        pattern = getPattern_trimex();
+    }
+
+    var maxlength = str.length;
+    var begin = 0;
+    var end = maxlength;
+
+    //for(; begin < maxlength; ++begin) {
+    //    if (pattern.indexOf(str.charAt(begin)) < 0) {
+    //        break;
+    //    }
+    //}
+
+    for(; end > 0; --end) {
+        if (pattern.indexOf(str.charAt(end - 1)) < 0) {
+            break;
+        }
+    }
+
+    if (begin > end) {
+        return '';
+    }
+
+    return str.slice(begin, end);
+}
+
 function getPattern_trimex() {
     return ' \r\n\t';
 }
@@ -262,27 +318,24 @@ function parseArray(str) {
     var arr = [];
     str = trimex(str);
     var index = 0;
-    var cw = '';
     var begin = str.indexOf('[', index);
     if (begin < 0) {
         return null;
     }
+    var cw = trimex(str.slice(index, begin));
+    if (!isWord(cw)) {
+        return null;
+    }
+    arr.push(cw);
 
     do {
-        cw = trimex(str.slice(index, begin));
-        if (!isWord(cw)) {
-            return null;
-        }
-
         index = begin;
-        arr.push(cw);
-
         begin = str.indexOf(']', index);
         if (begin < 0) {
             return null;
         }
 
-        cw = trimex(str.slice(index, begin));
+        cw = trimex(str.slice(index + 1, begin));
         if (!isWord(cw)) {
             return null;
         }
@@ -293,7 +346,7 @@ function parseArray(str) {
         begin = str.indexOf('[', index);
     } while (begin >= 0);
 
-    cw = trimex(str.slice(index, str.length));
+    cw = trimex(str.slice(index + 1, str.length));
     if (isWord(cw)) {
         return null;
     }
@@ -326,13 +379,30 @@ function parseRange(str) {
             var cw0 = trimex(str.slice(begin + 1, mid));
             var cw1 = trimex(str.slice(mid + 1, end));
 
-            if (isInt(cw0) && isInt(cw1)) {
-                return [cw0, cw1];
-            }
+            return [cw0, cw1];
+            //if (isInt(cw0) && isInt(cw1)) {
+            //    return [cw0, cw1];
+            //}
         }
     }
 
     return null;
+}
+
+// position the new line
+function posNewLine(str, beginindex) {
+    var max = str.length;
+    for (var i = beginindex; i < max; ++i) {
+        var cc = str.charAt(i);
+        if (canUsedWord(cc)) {
+            return beginindex;
+        }
+        else if (cc == '\n') {
+            return i + 1;
+        }
+    }
+
+    return beginindex;
 }
 
 exports.hasWildcard = hasWildcard;
@@ -352,9 +422,12 @@ exports.trim = trim;
 exports.ltrim = ltrim;
 exports.rtrim = rtrim;
 exports.trimex = trimex;
+exports.ltrimex = ltrimex;
+exports.rtrimex = rtrimex;
 exports.getPattern_trimex = getPattern_trimex;
 exports.canUsedWord = canUsedWord;
 exports.isWord = isWord;
 exports.parseArray = parseArray;
 exports.isInt = isInt;
 exports.parseRange = parseRange;
+exports.posNewLine = posNewLine;
