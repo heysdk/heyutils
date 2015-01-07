@@ -209,6 +209,10 @@ function rtrim(str) {
 //}
 
 function trimex(str, pattern) {
+    if (pattern == undefined) {
+        pattern = getPattern_trimex();
+    }
+
     var maxlength = str.length;
     var begin = 0;
     var end = maxlength;
@@ -242,7 +246,7 @@ function canUsedWord(c) {
 }
 
 function isWord(str) {
-    var word = trimex(str, getPattern_trimex());
+    var word = trimex(str);
     var max = word.length;
     for (var i = 0; i < max; ++i) {
         if (!canUsedWord(word.charAt(i))) {
@@ -256,7 +260,7 @@ function isWord(str) {
 // str is like abc[i][j], return ['abc', 'i', 'j']
 function parseArray(str) {
     var arr = [];
-    str = trimex(str, getPattern_trimex());
+    str = trimex(str);
     var index = 0;
     var cw = '';
     var begin = str.indexOf('[', index);
@@ -265,7 +269,7 @@ function parseArray(str) {
     }
 
     do {
-        cw = trimex(str.slice(index, begin), getPattern_trimex());
+        cw = trimex(str.slice(index, begin));
         if (!isWord(cw)) {
             return null;
         }
@@ -278,7 +282,7 @@ function parseArray(str) {
             return null;
         }
 
-        cw = trimex(str.slice(index, begin), getPattern_trimex());
+        cw = trimex(str.slice(index, begin));
         if (!isWord(cw)) {
             return null;
         }
@@ -289,7 +293,7 @@ function parseArray(str) {
         begin = str.indexOf('[', index);
     } while (begin >= 0);
 
-    cw = trimex(str.slice(index, str.length), getPattern_trimex());
+    cw = trimex(str.slice(index, str.length));
     if (isWord(cw)) {
         return null;
     }
@@ -311,7 +315,7 @@ function isInt(str) {
 
 // str is like [0, 100], return [0, 100]
 function parseRange(str) {
-    str = trimex(str, getPattern_trimex());
+    str = trimex(str);
     var cw = '';
     var begin = str.indexOf('[', 0);
     if (begin >= 0) {
