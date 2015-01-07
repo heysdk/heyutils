@@ -218,13 +218,13 @@ function trimex(str, pattern) {
     var end = maxlength;
 
     for(; begin < maxlength; ++begin) {
-        if (!pattern.indexOf(str.charAt(begin))) {
+        if (pattern.indexOf(str.charAt(begin)) < 0) {
             break;
         }
     }
 
     for(; end > 0; --end) {
-        if (!pattern.indexOf(str.charAt(begin))) {
+        if (pattern.indexOf(str.charAt(end - 1)) < 0) {
             break;
         }
     }
