@@ -85,8 +85,65 @@ function cmd_heycp(param, dir, callback) {
     }
 }
 
+function cmd_heyrm(param, dir, callback) {
+    var max = param.length;
+    if (max != 1) {
+        console.log('heyrm need dest params.');
+
+        callback();
+
+        return ;
+    }
+
+    var srcpath = path.join(dir, param[0]);
+    fileutils.delFileOrDirSync(srcpath);
+    
+    //if (strutils.hasWildcard(srcpath)) {
+    //    fileutils.readdirWildcard(srcpath, function (err, files) {
+    //        if (err) {
+    //            callback();
+    //
+    //            return ;
+    //        }
+    //
+    //        var maxi = files.length;
+    //        for (var i = 0; i < maxi; ++i) {
+    //            if (!fileutils.isDirectory(files[i])) {
+    //                var destpath = path.join(dir, param[1]);
+    //                fileutils.copyfile(files[i], destpath, callback);
+    //            }
+    //        }
+    //    });
+    //}
+    //else {
+    //    var srcstat = fs.lstatSync(srcpath);
+    //    if (srcstat.isDirectory()) {
+    //        fileutils.readdirWildcard(srcpath, function (err, files) {
+    //            if (err) {
+    //                callback();
+    //
+    //                return ;
+    //            }
+    //
+    //            var maxi = files.length;
+    //            for (var i = 0; i < maxi; ++i) {
+    //                if (!fileutils.isDirectory(files[i])) {
+    //                    var destpath = path.join(dir, param[1]);
+    //                    fileutils.copyfile(srcpath, destpath, callback);
+    //                }
+    //            }
+    //        });
+    //    }
+    //    else {
+    //        var destpath = path.join(dir, param[1]);
+    //        fileutils.copyfile(srcpath, destpath, callback);
+    //    }
+    //}
+}
+
 var heycmd = [
-    {cmd: 'heycp', func:cmd_heycp}
+    {cmd: 'heycp', func:cmd_heycp},
+    {cmd: 'heyrm', func:cmd_heyrm}
 ];
 
 function buildCmd(cmd, param) {

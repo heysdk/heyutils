@@ -150,6 +150,26 @@ function writeFile(filename, data, callback) {
     fs.writeFile(filename, data, callback);
 }
 
+function delFileOrDirSync(strpath) {
+    if (fs.existsSync(strpath)) {
+        if (isDirectory(strpath)) {
+            fs.readdirSync(strpath).forEach(function (file, index) {
+                var curdir = path.join(strpath, file);
+                if (isDirectory(curdir)) {
+                    delFileOrDirSync(curdir);
+                }
+                else {
+                    fs.unlinkSync(curdir);
+                }
+            });
+            fs.rmdirSync(strpath);
+        }
+        else {
+            fs.unlinkSync(strpath);
+        }
+    }
+}
+
 exports.isDirectory = isDirectory;
 exports.createDirectory = createDirectory;
 
@@ -158,3 +178,5 @@ exports.copyfile = copyfile;
 exports.readdirWildcard = readdirWildcard;
 
 exports.writeFile = writeFile;
+
+exports.delFileOrDirSync = delFileOrDirSync;

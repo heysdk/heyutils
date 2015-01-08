@@ -1,11 +1,13 @@
 heyutils
 ========
 
-**heyutils** is common API with *nodejs*.
+**heyutils**是**HeySDK**维护的一组*nodejs*小工具集。
+
+里面包含
 
 csv2obj
 -------
-a minimalist csv file reading tool for js object.
+一个极简的csv文件读取为js对象的工具
 
 	var csv2obj = require('./csv2obj.js');
 	var fs = require('fs');
@@ -20,9 +22,10 @@ a minimalist csv file reading tool for js object.
 		var csvinfo = csv2obj.csv2obj(data.toString());
 	});
 
+
 exec
 ----
-a mul-platform shell, it support sync shell code, and provide more mul-platform shell commands, like 'heycp' etc.
+一个跨平台的shell执行器，支持线性执行shell代码，并提供一组更方便的跨平台shell命令，heycp等
 
 	var exec = require('./exec');
 
@@ -82,12 +85,12 @@ a mul-platform shell, it support sync shell code, and provide more mul-platform 
 
 fileutils
 ---------
-a widget of the files, it support wildcard file copy, etc.
+文件相关的小工具，支持通配符的文件拷贝等
 
 stringutils
 -----------
-a widget of the string, it support wildcard, command, path, etc.
+字符串相关的小工具，支持通配符相关的字符串比对，支持目录和命令行的操作
 
 arrutils
 -----------
-a widget of the array.
+方便数组操作的通用接口
