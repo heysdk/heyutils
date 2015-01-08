@@ -28,6 +28,31 @@ function findChild(xmlnode, name) {
     return null;
 }
 
+function findChildValue(xmlnode, name, value) {
+    if (xmlnode.hasChildNodes()) {
+        var nums = xmlnode.childNodes.length;
+        var childs = xmlnode.childNodes;
+
+        for (var i = 0; i < nums; ++i) {
+            var curobj = childs[i];
+            if (curobj.nodeName == name && getValue(curobj) == value) {
+                return curobj;
+            }
+        }
+    }
+
+    return null;
+}
+
+function getValue(xmlnode) {
+    var child = findChild(xmlnode, '#text');
+    if (child != null) {
+        return child.data;
+    }
+
+    return '';
+}
+
 function chgValue(xmlnode, val) {
     if (xmlnode.hasChildNodes()) {
         var child = findChild(xmlnode, '#text');
@@ -90,11 +115,17 @@ function findAttr(xmlnode, attrName) {
     return '';
 }
 
+function removeElement(xmlnode) {
+    xmlnode.ownerDocument.removeChild(xmlnode);
+}
+
 exports.parseXML = parseXML;
 exports.save2xml = save2xml;
 exports.loadxml = loadxml;
 
 exports.findChild = findChild;
+exports.findChildValue = findChildValue;
+exports.getValue = getValue;
 exports.chgValue = chgValue;
 exports.getChildValue = getChildValue;
 
@@ -102,3 +133,4 @@ exports.findAttr = findAttr;
 
 exports.appendElement = appendElement;
 exports.appendTextNode = appendTextNode;
+exports.removeElement = removeElement;
