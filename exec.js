@@ -53,8 +53,8 @@ function cmd_heycp(param, dir, callback) {
             var maxi = files.length;
             for (var i = 0; i < maxi; ++i) {
                 if (!fileutils.isDirectory(files[i])) {
-                    var destpath = path.join(dir, param[1]);
-                    fileutils.copyfile(files[i], destpath, callback);
+                    var curdestpath = path.join(dir, param[1]);
+                    fileutils.copyfile(files[i], curdestpath, callback);
                 }
             }
         });

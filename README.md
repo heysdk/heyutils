@@ -89,5 +89,9 @@ stringutils
 a widget of the string, it support wildcard, command, path, etc.
 
 arrutils
------------
+--------
 a widget of the array.
+
+xmlutils
+--------
+a widget of the xmldom.

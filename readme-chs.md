@@ -94,3 +94,7 @@ stringutils
 arrutils
 -----------
 方便数组操作的通用接口
+
+xmlutils
+--------
+xmldom的一层封装，方便更好的操作xml

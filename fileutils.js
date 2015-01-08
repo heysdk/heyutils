@@ -7,8 +7,12 @@ var path = require('path');
 var strutils = require('./stringutils');
 
 function isDirectory(filename) {
-    var lstat = fs.lstatSync(filename);
-    return lstat.isDirectory();
+    if (fs.existsSync(filename)) {
+        var lstat = fs.lstatSync(filename);
+        return lstat.isDirectory();
+    }
+
+    return false;
 }
 
 function createDirectory(dir) {
@@ -45,7 +49,7 @@ function copyfile(src, dest, callback) {
         var destarr = strutils.splitPath(dest);
         var destdir = strutils.makePath(destarr, 0, destarr.length - 1);
         if (destdir.length > 0) {
-            createDirectory(dest);
+            createDirectory(destdir);
         }
     }
 
@@ -170,6 +174,48 @@ function delFileOrDirSync(strpath) {
     }
 }
 
+function copyFileOrDir(srcpath, destpath, callback) {
+    if (strutils.hasWildcard(srcpath)) {
+        readdirWildcard(srcpath, function (err, files) {
+            if (err) {
+                callback();
+
+                return ;
+            }
+
+            var maxi = files.length;
+            for (var i = 0; i < maxi; ++i) {
+                if (!isDirectory(files[i])) {
+                    copyfile(files[i], destpath, callback);
+                }
+            }
+        });
+    }
+    else {
+        if (isDirectory(srcpath)) {
+            createDirectory(destpath);
+
+            fs.readdirSync(srcpath).forEach(function (file, index) {
+                var cursrcpath = path.join(srcpath, file);
+                var curdestpath = path.join(destpath, file);
+                if (isDirectory(cursrcpath)) {
+                    copyFileOrDir(cursrcpath, curdestpath, function () {
+                    });
+                }
+                else {
+                    copyfile(cursrcpath, curdestpath, function () {
+                    });
+                }
+            });
+
+            callback();
+        }
+        else {
+            copyfile(srcpath, destpath, callback);
+        }
+    }
+}
+
 exports.isDirectory = isDirectory;
 exports.createDirectory = createDirectory;
 
@@ -180,3 +226,5 @@ exports.readdirWildcard = readdirWildcard;
 exports.writeFile = writeFile;
 
 exports.delFileOrDirSync = delFileOrDirSync;
+
+exports.copyFileOrDir = copyFileOrDir;
