@@ -2,6 +2,8 @@
  * Created by zhs007 on 2014/12/3.
  */
 
+var fs = require('fs');
+
 function csv2obj(str) {
     var obj = [];
     var head = [];
@@ -33,4 +35,10 @@ function csv2obj(str) {
     return obj;
 }
 
+function loadCSVSync(filename) {
+    var data = fs.readFileSync(filename);
+    return csv2obj(data.toString());
+}
+
 exports.csv2obj = csv2obj;
+exports.loadCSVSync = loadCSVSync;
