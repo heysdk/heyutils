@@ -107,6 +107,18 @@ function loadxml(filename, callback) {
     });
 }
 
+// callback(err)
+function save2xmlSync(filename, xmlobj) {
+    var str = pd.xml(new XMLSerializer().serializeToString(xmlobj));
+    fs.writeFileSync(filename, str);
+}
+
+// callback(err, xmlobj)
+function loadxmlSync(filename) {
+    var data = fs.readFileSync(filename);
+    return new DOMParser().parseFromString(data.toString());
+}
+
 function findAttr(xmlnode, attrName) {
     if (xmlnode.hasOwnProperty('attributes')) {
         return xmlnode.getAttribute(attrName);
@@ -122,6 +134,8 @@ function removeElement(xmlnode) {
 exports.parseXML = parseXML;
 exports.save2xml = save2xml;
 exports.loadxml = loadxml;
+exports.save2xmlSync = save2xmlSync;
+exports.loadxmlSync = loadxmlSync;
 
 exports.findChild = findChild;
 exports.findChildValue = findChildValue;

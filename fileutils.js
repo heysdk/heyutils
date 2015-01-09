@@ -195,20 +195,25 @@ function copyFileOrDir(srcpath, destpath, callback) {
         if (isDirectory(srcpath)) {
             createDirectory(destpath);
 
-            fs.readdirSync(srcpath).forEach(function (file, index) {
+            var files = fs.readdirSync(srcpath);
+            files.forEach(function (file, index) {
                 var cursrcpath = path.join(srcpath, file);
                 var curdestpath = path.join(destpath, file);
                 if (isDirectory(cursrcpath)) {
                     copyFileOrDir(cursrcpath, curdestpath, function () {
+                        if (index == files.length - 1) {
+                            callback();
+                        }
                     });
                 }
                 else {
                     copyfile(cursrcpath, curdestpath, function () {
+                        if (index == files.length - 1) {
+                            callback();
+                        }
                     });
                 }
             });
-
-            callback();
         }
         else {
             copyfile(srcpath, destpath, callback);
