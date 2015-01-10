@@ -15,10 +15,16 @@
     "xmldom": "*",
     "pretty-data": "*"
   },
+  "repository": {
+    "url": "git://github.com/heysdk/heyutils.git"
+  },
   "author": "zhs007",
   "license": "MIT",
   "homepage": "https://github.com/heysdk/heyutils",
   "bugs": {
     "url": "https://github.com/heysdk/heyutils/issues"
-  }
+  },
+  "readmeFilename": "README.md",
+  "_id": "heyutils@0.2.0",
+  "_from": "heyutils@*"
 }
