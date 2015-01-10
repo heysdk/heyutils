@@ -1,6 +1,6 @@
 {
   "name": "heyutils",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "a useful toolkit for nodejs, like csv2obj filesystem etc",
   "main": "./index.js",
   "keywords": [
@@ -25,6 +25,6 @@
     "url": "https://github.com/heysdk/heyutils/issues"
   },
   "readmeFilename": "README.md",
-  "_id": "heyutils@0.2.0",
+  "_id": "heyutils@0.2.2",
   "_from": "heyutils@*"
 }
