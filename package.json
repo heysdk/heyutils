@@ -1,12 +1,24 @@
 {
   "name": "heyutils",
   "version": "0.2.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./samples/mergexml.js"
-  },
+  "description": "a useful toolkit for nodejs, like csv2obj filesystem etc",
+  "main": "./index.js",
+  "keywords": [
+    "csv2obj",
+    "xml",
+    "file",
+    "wildcard",
+    "array",
+    "exec"
+  ],
   "dependencies": {
     "xmldom": "*",
     "pretty-data": "*"
+  },
+  "author": "zhs007",
+  "license": "MIT",
+  "homepage": "https://github.com/heysdk/heyutils",
+  "bugs": {
+    "url": "https://github.com/heysdk/heyutils/issues"
   }
 }

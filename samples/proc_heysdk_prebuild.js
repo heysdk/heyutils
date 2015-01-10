@@ -25,6 +25,7 @@ console.log(_heysdk_root);
 
 exec.addCmdEx(lst, 'heycp heysdkcpp/*.h prebuild/android-cc3/include/', _heysdk_root);
 exec.addCmdEx(lst, 'heycp heysdkcpp/android/*.h prebuild/android-cc3/include/android/', _heysdk_root);
+exec.addCmdEx(lst, 'heycp heysdkcpp/cc3/*.h prebuild/android-cc3/include/cc3/', _heysdk_root);
 exec.addCmdEx(lst, 'heycp heysdkcpp/json/*.h prebuild/android-cc3/include/json/', _heysdk_root);
 exec.addCmdEx(lst, 'heycp heysdkcpp/md5/*.h prebuild/android-cc3/include/md5/', _heysdk_root);
 exec.addCmdEx(lst, 'heycp heysdkcpp/tolua_cocos2dx3/*.h prebuild/android-cc3/include/tolua_cocos2dx3/', _heysdk_root);
