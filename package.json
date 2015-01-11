@@ -1,6 +1,6 @@
 {
   "name": "heyutils",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "a useful toolkit for nodejs, like csv2obj filesystem etc",
   "main": "./index.js",
   "keywords": [
@@ -19,12 +19,10 @@
     "url": "git://github.com/heysdk/heyutils.git"
   },
   "author": "heysdk",
-  "license": "MIT",
+  "license": "Apache",
   "homepage": "https://github.com/heysdk/heyutils",
   "bugs": {
     "url": "https://github.com/heysdk/heyutils/issues"
   },
-  "readmeFilename": "README.md",
-  "_id": "heyutils@0.2.3",
-  "_from": "heyutils@*"
+  "readmeFilename": "README.md"
 }

@@ -131,6 +131,52 @@ function removeElement(xmlnode) {
     xmlnode.ownerDocument.removeChild(xmlnode);
 }
 
+// str is 'aaa>bbb>ccc'
+function findElement(xmlnode, str) {
+    var arr = str.split('>');
+    var element = xmlnode;
+    for (var i = 0; i < arr.length; ++i) {
+        var curelement = findChild(element, arr[i]);
+        if (curelement != null) {
+            if (i == arr.length - 1) {
+                return curelement;
+            }
+
+            element = curelement;
+        }
+        else {
+            return null;
+        }
+    }
+
+    return null;
+}
+
+// str is 'aaa>bbb>ccc>ddd', 'ddd' is attrib
+function findElementAttrib(xmlnode, str) {
+    var arr = str.split('>');
+    var element = xmlnode;
+    for (var i = 0; i < arr.length; ++i) {
+        if (i == arr.length - 1) {
+            return element.getAttribute(arr[i]);
+        }
+
+        var curelement = findChild(element, arr[i]);
+        if (curelement != null) {
+            element = curelement;
+        }
+        else {
+            return '';
+        }
+    }
+
+    return '';
+}
+
+function prettyxml(str) {
+    pd.xml(str);
+}
+
 exports.parseXML = parseXML;
 exports.save2xml = save2xml;
 exports.loadxml = loadxml;
@@ -142,9 +188,13 @@ exports.findChildValue = findChildValue;
 exports.getValue = getValue;
 exports.chgValue = chgValue;
 exports.getChildValue = getChildValue;
+exports.findElement = findElement;
+exports.findElementAttrib = findElementAttrib;
 
 exports.findAttr = findAttr;
 
 exports.appendElement = appendElement;
 exports.appendTextNode = appendTextNode;
 exports.removeElement = removeElement;
+
+exports.prettyxml = prettyxml;
