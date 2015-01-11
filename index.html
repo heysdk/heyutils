@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Heyutils : a useful toolkit for nodejs">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Heyutils</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/heysdk/heyutils">View on GitHub</a>
+
+          <h1 id="project_title">Heyutils</h1>
+          <h2 id="project_tagline">a useful toolkit for nodejs</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/heysdk/heyutils/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/heysdk/heyutils/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="heyutils" class="anchor" href="#heyutils" aria-hidden="true"><span class="octicon octicon-link"></span></a>heyutils</h1>
+
+<p><strong>heyutils</strong> is common API with <em>nodejs</em>.</p>
+
+<h2>
+<a id="csv2obj" class="anchor" href="#csv2obj" aria-hidden="true"><span class="octicon octicon-link"></span></a>csv2obj</h2>
+
+<p>a minimalist csv file reading tool for js object.</p>
+
+<pre><code>var csv2obj = require('./csv2obj.js');
+var fs = require('fs');
+
+fs.readFile('test.csv', function(err, data) {
+    if (err) {
+        console.log('read ' + csvfile + ' fail!');
+
+        return ;
+    }
+
+    var csvinfo = csv2obj.csv2obj(data.toString());
+});
+</code></pre>
+
+<h2>
+<a id="exec" class="anchor" href="#exec" aria-hidden="true"><span class="octicon octicon-link"></span></a>exec</h2>
+
+<p>a mul-platform shell, it support sync shell code, and provide more mul-platform shell commands, like 'heycp' etc.</p>
+
+<pre><code>var exec = require('./exec');
+
+var lst = [];
+
+exec.addCmdEx(lst, 'rpm -ivh http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm', './');
+exec.addCmdEx(lst, 'rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm', './');
+exec.addCmdEx(lst, 'yum -y update', './');
+exec.addCmdEx(lst, 'yum -y install nginx', './');
+exec.addCmdEx(lst, 'yum -y install php-fpm', './');
+exec.addCmdEx(lst, 'yum -y install php-pecl-apc', './');
+exec.addCmdEx(lst, 'yum -y install php-mysql', './');
+exec.addCmdEx(lst, 'yum -y install php-redis', './');
+exec.addCmdEx(lst, 'yum -y install mysql', './');
+exec.addCmdEx(lst, 'yum -y install redis', './');
+exec.addCmdEx(lst, 'yum -y install npm', './');
+exec.addCmdEx(lst, 'yum -y install nodejs', './');
+exec.addCmdEx(lst, 'yum -y install python', './');
+exec.addCmdEx(lst, 'yum -y install svn', './');
+exec.addCmdEx(lst, 'yum -y install php-gd', './');
+
+exec.addCmdEx(lst, 'chkconfig redis on', './');
+
+exec.addCmdEx(lst, 'mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bfsan.old', './');
+exec.addCmdEx(lst, 'mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.bfsan.old', './');
+exec.addCmdEx(lst, 'cp nginx/nginx.conf /etc/nginx/', './');
+exec.addCmdEx(lst, 'cp nginx/conf.d/default.conf /etc/nginx/conf.d/', './');
+exec.addCmdEx(lst, 'chkconfig nginx on', './');
+
+exec.addCmdEx(lst, 'mv /etc/php.ini /etc/php.ini.bfsan.old', './');
+exec.addCmdEx(lst, 'mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf.bfsan.old', './');
+exec.addCmdEx(lst, 'cp php/php.ini /etc/', './');
+exec.addCmdEx(lst, 'cp php/php.d/apc.ini /etc/php.d/', './');
+exec.addCmdEx(lst, 'cp php/php-fpm.d/www.conf /etc/php-fpm.d/', './');
+exec.addCmdEx(lst, 'chkconfig php-fpm on', './');
+
+exec.addCmdEx(lst, 'mkdir /var/lib/php/session', './');
+exec.addCmdEx(lst, 'chmod 777 -R /var/lib/php/session', './');
+
+exec.addCmdEx(lst, 'mv /etc/sysconfig/iptables /etc/sysconfig/iptables.bfsan.old', './');
+exec.addCmdEx(lst, 'cp sysconfig/iptables /etc/sysconfig/iptables', './');
+
+exec.addCmdEx(lst, 'cp html/* /var/www/html/', './');
+
+exec.addCmdEx(lst, 'wget http://sourceforge.net/projects/phpmyadmin/files/phpMyAdmin/4.2.11/phpMyAdmin-4.2.11-english.tar.gz', '/var/www/html');
+exec.addCmdEx(lst, 'tar -zxvf phpMyAdmin-4.2.11-english.tar.gz', '/var/www/html');
+exec.addCmdEx(lst, 'mv phpMyAdmin-4.2.11-english tpm', '/var/www/html');
+exec.addCmdEx(lst, 'chmod 777 -R tpm', '/var/www/html');
+exec.addCmdEx(lst, 'rm phpMyAdmin-4.2.11-english.tar.gz', '/var/www/html');
+
+exec.addCmdEx(lst, 'mv ~/.subversion/servers ~/.subversion/servers.old', './');
+exec.addCmdEx(lst, 'cp .subversion/servers ~/.subversion/servers', './');
+
+exec.addCmdEx(lst, 'shutdown -r now', './');
+
+exec.runQueue(lst, 0);
+</code></pre>
+
+<h2>
+<a id="fileutils" class="anchor" href="#fileutils" aria-hidden="true"><span class="octicon octicon-link"></span></a>fileutils</h2>
+
+<p>a widget of the files, it support wildcard file copy, etc.</p>
+
+<h2>
+<a id="stringutils" class="anchor" href="#stringutils" aria-hidden="true"><span class="octicon octicon-link"></span></a>stringutils</h2>
+
+<p>a widget of the string, it support wildcard, command, path, etc.</p>
+
+<h2>
+<a id="arrutils" class="anchor" href="#arrutils" aria-hidden="true"><span class="octicon octicon-link"></span></a>arrutils</h2>
+
+<p>a widget of the array.</p>
+
+<h2>
+<a id="xmlutils" class="anchor" href="#xmlutils" aria-hidden="true"><span class="octicon octicon-link"></span></a>xmlutils</h2>
+
+<p>a widget of the xmldom.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Heyutils maintained by <a href="https://github.com/heysdk">heysdk</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-58388050-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+
+  </body>
+</html>
