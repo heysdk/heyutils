@@ -8,8 +8,14 @@ function getMillisecond() {
 }
 
 function endPerformance() {
+    return getMillisecond() - this.beginms;
+}
+
+function endAndBeginPerformance() {
     var cur = getMillisecond();
-    return cur - this.begin;
+    var off = cur - this.beginms;
+    this.beginms = cur;
+    return off;
 }
 
 function Performance() {
@@ -17,6 +23,7 @@ function Performance() {
 }
 
 Performance.prototype.end = endPerformance;
+Performance.prototype.endAndBegin = endAndBeginPerformance;
 
 exports.Performance = Performance;
 
