@@ -28,6 +28,25 @@ function findChild(xmlnode, name) {
     return null;
 }
 
+function findChildList(xmlnode, name) {
+    if (xmlnode.hasChildNodes()) {
+        var nums = xmlnode.childNodes.length;
+        var childs = xmlnode.childNodes;
+        var lst = [];
+
+        for (var i = 0; i < nums; ++i) {
+            var curobj = childs[i];
+            if (curobj.nodeName == name) {
+                lst.push(curobj);
+            }
+        }
+
+        return lst;
+    }
+
+    return null;
+}
+
 function findChildValue(xmlnode, name, value) {
     if (xmlnode.hasChildNodes()) {
         var nums = xmlnode.childNodes.length;
@@ -135,6 +154,86 @@ function removeElement(xmlnode) {
 // str is 'aaa>bbb|ccc=ccc' | attrib
 // str is 'aaa>bbb=ccc' = value
 function findElement(xmlnode, str) {
+    var pos = str.indexOf('>');
+    if (pos > 0 && pos < str.length) {
+        var next = str.slice(pos + 1, str.length);
+
+        var lst = findChildList(xmlnode, str.slice(0, pos));
+        if (lst == null) {
+            return null;
+        }
+
+        var max = lst.length;
+        for (var i = 0; i < max; ++i) {
+            var ele = findElement(lst[i], next);
+            if (ele != null) {
+                return ele;
+            }
+        }
+    }
+
+    pos = str.indexOf('|');
+    if (pos > 0 && pos < str.length) {
+        var arr = str.slice(pos + 1, str.length).split('=');
+        if (arr.length == 2) {
+            var att = arr[0];
+            var val = arr[1];
+
+            var lst = findChildList(xmlnode, str.slice(0, pos));
+            if (lst == null) {
+                return null;
+            }
+
+            var max = lst.length;
+            for (var i = 0; i < max; ++i) {
+                if (lst[i].getAttribute(att) == val) {
+                    return lst[i];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    var arr = str.split('=');
+    if (arr.length == 2) {
+        var name = arr[0];
+        var val = arr[1];
+
+        var lst = findChildList(xmlnode, name);
+        if (lst == null) {
+            return null;
+        }
+
+        var max = lst.length;
+        for (var i = 0; i < max; ++i) {
+            if (getValue(lst[i]) == val) {
+                return lst[i];
+            }
+        }
+
+        return null;
+    }
+
+    if (arr.length != 1) {
+        return null;
+    }
+
+    var lst = findChildList(xmlnode, str);
+    if (lst == null) {
+        return null;
+    }
+
+    if (lst.length > 0) {
+        return lst[0];
+    }
+
+    return null;
+
+    return null;
+
+    return null;
+
     var arr = str.split('>');
     var max = arr.length;
     var lasttype = 0;   // 0 - element, 1 - attrib, 2 - value
@@ -194,7 +293,7 @@ function findElement(xmlnode, str) {
 function findElementAttrib(xmlnode, str) {
     var arr = str.split('|');
     if (arr.length == 2) {
-        var ele = findElement(arr[0]);
+        var ele = findElement(xmlnode, arr[0]);
         if (ele != null) {
             return ele.getAttribute(arr[1]);
         }
@@ -228,3 +327,5 @@ exports.appendTextNode = appendTextNode;
 exports.removeElement = removeElement;
 
 exports.prettyxml = prettyxml;
+
+exports.findChildList = findChildList;
