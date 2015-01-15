@@ -131,15 +131,53 @@ function removeElement(xmlnode) {
     xmlnode.ownerDocument.removeChild(xmlnode);
 }
 
-// str is 'aaa>bbb>ccc'
+// str is 'aaa>bbb>ccc' > child
+// str is 'aaa>bbb|ccc=ccc' | attrib
+// str is 'aaa>bbb=ccc' = value
 function findElement(xmlnode, str) {
     var arr = str.split('>');
+    var max = arr.length;
+    var lasttype = 0;   // 0 - element, 1 - attrib, 2 - value
+    var attr = '';
+    var val = '';
+    if (max > 1) {
+        var arr2 = arr[max - 1].split('=');
+        if (arr2.length == 2) {
+            val = arr2[1];
+
+            var arr3 = arr2[0].split('|');
+            if (arr3.length == 2) {
+                attr = arr3[1];
+
+                arr[max - 1] = arr3[0];
+
+                lasttype = 1;
+            }
+            else {
+                arr[max - 1] = arr2[0];
+
+                lasttype = 2;
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
     var element = xmlnode;
-    for (var i = 0; i < arr.length; ++i) {
+    for (var i = 0; i < max; ++i) {
         var curelement = findChild(element, arr[i]);
         if (curelement != null) {
             if (i == arr.length - 1) {
-                return curelement;
+                if (lasttype == 0) {
+                    return curelement;
+                }
+                else if (lasttype == 1 && curelement.getAttribute(attr) == val) {
+                    return curelement;
+                }
+                else if (lasttype == 2 && getValue(curelement) == val) {
+                    return curelement;
+                }
             }
 
             element = curelement;
@@ -152,25 +190,17 @@ function findElement(xmlnode, str) {
     return null;
 }
 
-// str is 'aaa>bbb>ccc>ddd', 'ddd' is attrib
+// str is 'aaa>bbb>ccc|ddd', 'ddd' is attrib
 function findElementAttrib(xmlnode, str) {
-    var arr = str.split('>');
-    var element = xmlnode;
-    for (var i = 0; i < arr.length; ++i) {
-        if (i == arr.length - 1) {
-            return element.getAttribute(arr[i]);
-        }
-
-        var curelement = findChild(element, arr[i]);
-        if (curelement != null) {
-            element = curelement;
-        }
-        else {
-            return '';
+    var arr = str.split('|');
+    if (arr.length == 2) {
+        var ele = findElement(arr[0]);
+        if (ele != null) {
+            return ele.getAttribute(arr[1]);
         }
     }
 
-    return '';
+    return "";
 }
 
 function prettyxml(str) {

@@ -1,6 +1,6 @@
 {
   "name": "heyutils",
-  "version": "0.5.3",
+  "version": "0.5.5",
   "description": "a useful toolkit for nodejs, like csv2obj filesystem etc",
   "main": "./index.js",
   "keywords": [
