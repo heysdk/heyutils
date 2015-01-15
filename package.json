@@ -1,6 +1,6 @@
 {
   "name": "heyutils",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "a useful toolkit for nodejs, like csv2obj filesystem etc",
   "main": "./index.js",
   "keywords": [
@@ -13,7 +13,8 @@
   ],
   "dependencies": {
     "xmldom": "*",
-    "pretty-data": "*"
+    "pretty-data": "*",
+    "moment": "*"
   },
   "repository": {
     "url": "git://github.com/heysdk/heyutils.git"
