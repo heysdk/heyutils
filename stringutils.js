@@ -400,23 +400,23 @@ function parseRange(str) {
     return null;
 }
 
-function findWord(str, dest, index, pattern) {
-    if (pattern == undefined) {
-        pattern = getPattern_word();
-    }
-
-    var begin = -1;
-    while ((begin = str.indexOf(dest, index)) >= 0) {
-        if (begin == 0 || !canUsedWord(str.charAt(begin - 1))) {
-            var end = begin + dest.length;
-            if (end == str.length || !canUsedWord(str.charAt(end))) {
-                return begin;
-            }
-        }
-    }
-
-    return -1;
-}
+//function findWord(str, dest, index, pattern) {
+//    if (pattern == undefined) {
+//        pattern = getPattern_word();
+//    }
+//
+//    var begin = -1;
+//    while ((begin = str.indexOf(dest, index)) >= 0) {
+//        if (begin == 0 || !canUsedWord(str.charAt(begin - 1))) {
+//            var end = begin + dest.length;
+//            if (end == str.length || !canUsedWord(str.charAt(end))) {
+//                return begin;
+//            }
+//        }
+//    }
+//
+//    return -1;
+//}
 
 // str is like 'a in b', return [a, b]
 function parse_AInB(str, strin, wordpattern) {
@@ -454,6 +454,38 @@ function posNewLine(str, beginindex, pattern) {
     }
 
     return beginindex;
+}
+
+// find word
+function findWord(str, word, begin, wordpattern) {
+    if (wordpattern == undefined) {
+        wordpattern = getPattern_word();
+    }
+
+    if (begin == undefined) {
+        begin = 0;
+    }
+
+    do{
+        begin = str.indexOf(word, begin);
+        if (begin == -1) {
+            return -1;
+        }
+
+        if (!canUsedWord(str.charAt(begin + word.length), wordpattern)) {
+            if (begin > 0 && !canUsedWord(str.charAt(begin - 1), wordpattern)) {
+                return begin;
+            }
+
+            if (begin == 0) {
+                return begin;
+            }
+        }
+
+
+    } while(true);
+
+    return -1;
 }
 
 exports.hasWildcard = hasWildcard;
