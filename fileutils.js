@@ -23,8 +23,6 @@ function createDirectory(dir) {
             var destdir = strutils.makePath(arr, 0, max - 1);
 
             createDirectory(destdir);
-
-            return ;
         }
 
         fs.mkdirSync(dir);
@@ -200,6 +198,10 @@ function copyFileOrDir(srcpath, destpath, callback) {
 
             var files = fs.readdirSync(srcpath);
             files.forEach(function (file, index) {
+                if (file == '.DS_Store') {
+                    return ;
+                }
+
                 var cursrcpath = path.join(srcpath, file);
                 var curdestpath = path.join(destpath, file);
                 if (isDirectory(cursrcpath)) {
