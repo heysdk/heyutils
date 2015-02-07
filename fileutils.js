@@ -21,7 +21,10 @@ function createDirectory(dir) {
         var max = arr.length;
         if (max > 1) {
             var destdir = strutils.makePath(arr, 0, max - 1);
+
             createDirectory(destdir);
+
+            return ;
         }
 
         fs.mkdirSync(dir);

@@ -134,6 +134,10 @@ function makePath(arr, begin, nums) {
     }
 
     var curpath = arr[begin];
+    if (curpath.length == 0) {
+        curpath = '/';
+    }
+
     for (var i = 1; i < nums; ++i) {
         curpath = path.join(curpath, arr[begin + i]);
     }
