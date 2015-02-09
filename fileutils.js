@@ -175,11 +175,12 @@ function delFileOrDirSync(strpath) {
     }
 }
 
+// callback(srcpath, destpath, isok)
 function copyFileOrDir(srcpath, destpath, callback) {
     if (strutils.hasWildcard(srcpath)) {
         readdirWildcard(srcpath, function (err, files) {
             if (err) {
-                callback();
+                callback(srcpath, destpath, false);
 
                 return ;
             }
@@ -187,7 +188,11 @@ function copyFileOrDir(srcpath, destpath, callback) {
             var maxi = files.length;
             for (var i = 0; i < maxi; ++i) {
                 if (!isDirectory(files[i])) {
-                    copyfile(files[i], destpath, callback);
+                    copyfile(files[i], destpath, function () {
+                        if (i == maxi - 1) {
+                            callback(srcpath, destpath, true);
+                        }
+                    });
                 }
             }
         });
@@ -205,23 +210,25 @@ function copyFileOrDir(srcpath, destpath, callback) {
                 var cursrcpath = path.join(srcpath, file);
                 var curdestpath = path.join(destpath, file);
                 if (isDirectory(cursrcpath)) {
-                    copyFileOrDir(cursrcpath, curdestpath, function () {
+                    copyFileOrDir(cursrcpath, curdestpath, function (src, dest, isok) {
                         if (index == files.length - 1) {
-                            callback();
+                            callback(srcpath, destpath, true);
                         }
                     });
                 }
                 else {
                     copyfile(cursrcpath, curdestpath, function () {
                         if (index == files.length - 1) {
-                            callback();
+                            callback(srcpath, destpath, true);
                         }
                     });
                 }
             });
         }
         else {
-            copyfile(srcpath, destpath, callback);
+            copyfile(srcpath, destpath, function () {
+                callback(srcpath, destpath, true);
+            });
         }
     }
 }

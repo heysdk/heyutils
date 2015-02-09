@@ -486,6 +486,8 @@ function findWord(str, word, begin, wordpattern) {
             }
         }
 
+        begin += word.length;
+
 
     } while(true);
 
