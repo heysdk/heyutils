@@ -30,6 +30,8 @@ function createDirectory(dir) {
 }
 
 function copyfile(src, dest, callback) {
+    console.log('copyfile ' + src + ' ' + dest);
+
     if (strutils.hasWildcard(src) || strutils.hasWildcard(dest)) {
         callback();
 
@@ -177,6 +179,7 @@ function delFileOrDirSync(strpath) {
 
 // callback(srcpath, destpath, isok)
 function copyFileOrDir(srcpath, destpath, callback) {
+    console.log('copyFileOrDir ' + srcpath + ' ' + destpath);
     if (strutils.hasWildcard(srcpath)) {
         readdirWildcard(srcpath, function (err, files) {
             if (err) {
@@ -202,8 +205,20 @@ function copyFileOrDir(srcpath, destpath, callback) {
             createDirectory(destpath);
 
             var files = fs.readdirSync(srcpath);
+            if (files.length == 0) {
+                callback(srcpath, destpath, true);
+
+                return ;
+            }
+
             files.forEach(function (file, index) {
                 if (file == '.DS_Store') {
+                    if (files.length == 1) {
+                        callback(srcpath, destpath, true);
+
+                        return ;
+                    }
+
                     return ;
                 }
 
