@@ -494,6 +494,49 @@ function findWord(str, word, begin, wordpattern) {
     return -1;
 }
 
+function splitEx(str, char, discardQuotes) {
+    if (discardQuotes == undefined) {
+        discardQuotes = false;
+    }
+
+    if (char == '"') {
+        return str.split(char);
+    }
+
+    if (str.indexOf('"') < 0) {
+        return str.split(char);
+    }
+
+    var max = str.length;
+    var arr = [];
+    var curstr = '';
+    var hasQuotes = false;
+
+    for (var i = 0; i < max; ++i) {
+        var curchar = str.charAt(i);
+        if (curchar == '"') {
+            hasQuotes = !hasQuotes;
+            if (discardQuotes) {
+                curstr += curchar;
+            }
+        }
+        else if (str.indexOf(char, i) == i && !hasQuotes) {
+            arr.push(curstr);
+            curstr = '';
+            i += char.length - 1;
+        }
+        else {
+            curstr += curchar;
+        }
+    }
+
+    if (curstr.length > 0) {
+        arr.push(curstr);
+    }
+
+    return arr;
+}
+
 exports.hasWildcard = hasWildcard;
 exports.equWildcard = equWildcard;
 
@@ -523,3 +566,5 @@ exports.parseRange = parseRange;
 exports.parse_AInB = parse_AInB;
 exports.posNewLine = posNewLine;
 exports.findWord = findWord;
+
+exports.splitEx = splitEx;
